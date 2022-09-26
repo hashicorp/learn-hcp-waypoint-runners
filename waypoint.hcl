@@ -17,18 +17,23 @@ variable "registry_imagename" {
   env = ["REGISTRY_IMAGENAME"]
 }
 
-project = "docker-flask-example"
+variable "aws_region" {
+  type = string
+  default = ""
+  env = ["TF_VAR_region"]
+}
 
-app "docker-flask" {
+project = "learn-hcp-runners"
+
+app "dev" {
   build {
     use "docker" {
-      context = "python-app"
-      dockerfile = "python-app/Dockerfile"
+      dockerfile = "Dockerfile"
     }
     registry {
       use "docker" {
         image = "${var.registry_username}/${var.registry_imagename}"
-        tag = "1"
+        tag = "dev"
         local = false
         auth {
           username = var.registry_username
@@ -37,7 +42,47 @@ app "docker-flask" {
       }
     }
   }
+
   deploy {
-    use docker {}
+    use "docker" {
+      service_port = 8080
+      static_environment = {
+        PLATFORM = "docker (dev)"
+      }
+    }
+  }
+}
+
+app "ecs" {
+  runner {
+    profile = "ecs-ECS-RUNNER"
+  }
+
+  build {
+    use "docker" {
+      dockerfile = "Dockerfile"
+    }
+    registry {
+      use "docker" {
+        image = "${var.registry_username}/${var.registry_imagename}"
+        tag = "ecs"
+        local = false
+        auth {
+          username = var.registry_username
+          password = var.registry_password
+        }
+      }
+    }
+  }
+
+  deploy {
+    use "aws-ecs" {
+      service_port = 8080
+      static_environment = {
+        PLATFORM = "aws-ecs (ecs)"
+      }
+      region = var.aws_region
+      memory = 512
+    }
   }
 }

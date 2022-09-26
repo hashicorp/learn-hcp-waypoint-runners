@@ -13,6 +13,4 @@ ADD /app/ /app/
 
 EXPOSE 8080
 
-# ENV PLATFORM="dockertest"
-
 CMD ["gunicorn", "-b", "0.0.0.0:8080", "wsgi", "-k", "gevent"]
