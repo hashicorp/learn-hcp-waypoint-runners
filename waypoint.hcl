@@ -27,9 +27,7 @@ project = "learn-hcp-runners"
 
 app "dev" {
   build {
-    use "docker" {
-      dockerfile = "Dockerfile"
-    }
+    use "docker" {}
     registry {
       use "docker" {
         image = "${var.registry_username}/${var.registry_imagename}"
@@ -59,9 +57,7 @@ app "ecs" {
   }
 
   build {
-    use "docker" {
-      dockerfile = "Dockerfile"
-    }
+    use "docker" {}
     registry {
       use "docker" {
         image = "${var.registry_username}/${var.registry_imagename}"
