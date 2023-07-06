@@ -53,7 +53,7 @@ app "dev" {
 
 app "ecs" {
   runner {
-    profile = "ecs-ECS-RUNNER"
+    profile = "ecs-ecs-runner"
   }
 
   build {
